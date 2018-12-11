@@ -8,10 +8,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.content.DialogInterface;
-import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.preference.PreferenceManager;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -23,30 +19,41 @@ import com.community.jboss.visitingcard.maps.MapsActivity;
 import com.community.jboss.visitingcard.R;
 import com.community.jboss.visitingcard.SettingsActivity;
 
-
-
-import android.content.DialogInterface;
 import android.graphics.Bitmap;
-import com.community.jboss.visitingcard.R;
-import com.community.jboss.visitingcard.SettingsActivity;
-import com.community.jboss.visitingcard.maps.MapsActivity;
+import com.mikhaellopez.circularimageview.CircularImageView;
+
 import java.io.IOException;
 import siclo.com.ezphotopicker.api.EZPhotoPick;
 import siclo.com.ezphotopicker.api.EZPhotoPickStorage;
 import siclo.com.ezphotopicker.api.models.EZPhotoPickConfig;
 import siclo.com.ezphotopicker.api.models.PhotoSource;
-import android.widget.ImageButton;
+import android.widget.TextView;
 
 public class VisitingCardActivity extends AppCompatActivity {
 
-    private ImageButton profile_img;
+    private CircularImageView profile_img;
+    private TextView name = null;
+    private TextView phoneNumeber = null;
+    private TextView email = null;
+    private TextView twitter = null;
+    private TextView git = null;
+    private TextView linkeIn = null;
+
 
     public static final String PREF_DARK_THEME = "dark_theme";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.visiting_card);
+        name = findViewById(R.id.name);
+        phoneNumeber = findViewById(R.id.phoneNumber);
+        email = findViewById(R.id.email);
+        twitter = findViewById(R.id.twitter_text);
+        git = findViewById(R.id.git_text);
+        linkeIn = findViewById(R.id.linked_text);
 
+        final SharedPreferences settings = getSharedPreferences("settings",MODE_PRIVATE);
+        SetUpViews(settings);
 	profile_img=findViewById(R.id.profile_img);
 
         // TODO: Add a ImageView and a number of EditText to get his/her Visiting Card details (Currently authenticated User)
@@ -72,6 +79,13 @@ public class VisitingCardActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        final SharedPreferences settings = getSharedPreferences("settings",MODE_PRIVATE);
+        SetUpViews(settings);
     }
 
     @Override
@@ -129,7 +143,7 @@ public class VisitingCardActivity extends AppCompatActivity {
                 return super.onOptionsItemSelected(item);
         }
     }
-    
+
     public void select_img(View view) {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setMessage("Select image source")
@@ -152,5 +166,14 @@ public class VisitingCardActivity extends AppCompatActivity {
                 });
         AlertDialog alert = builder.create();
         alert.show();
+    }
+    private void SetUpViews(SharedPreferences settings) {
+        name.setText(settings.getString("card_name", ""));
+        phoneNumeber.setText(settings.getString("card_phone", ""));
+        email.setText(settings.getString("card_email", ""));
+        twitter.setText(settings.getString("card_twitter", ""));
+        git.setText(settings.getString("card_git", ""));
+        linkeIn.setText(settings.getString("card_linked", ""));
+
     }
 }
